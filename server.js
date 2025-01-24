@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import OAuth1 from 'oauth-1.0a';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -12,69 +14,46 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post('/api/getAccessToken', async (req, res) => {
-  const { clientId, client_secret } = req.body;
-
-  if (!clientId || !client_secret) {
-    return res
-      .status(400)
-      .json({ error: 'Client ID and Client Secret are required' });
-  }
-
-  try {
-    const response = await axios.post(
-      'https://api.twitter.com/2/oauth2/token',
-      new URLSearchParams({
-        grant_type: 'client_credentials',
-      }).toString(),
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${clientId}:${client_secret}`).toString('base64')}`,
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-        },
-      }
-    );
-
-    res.json({ accessToken: response.data.access_token });
-  } catch (error) {
-    console.error(
-      'Error: ',
-      error.response?.data || error.message
-    );
-    res
-      .status(500)
-      .json({
-        errors: error.response?.data?.errors || [{ message: error.message }],
-      });
-  }
-});
-
 app.post('/api/postTweet', async (req, res) => {
-  const { accessToken, tweetText } = req.body;
+  const { api_key, api_secret, access_token, access_token_secret, tweetText } = req.body;
 
-  if (!accessToken || !tweetText) {
-    return res
-      .status(400)
-      .json({ error: 'Access Token and text are required' });
+  if (!api_key || !api_secret || !access_token || !access_token_secret || !tweetText) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
-  try {
-    const response = await axios.post(
-      'https://api.twitter.com/2/tweets',
-      { text: tweetText },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+  const oauth = OAuth1({
+    consumer: {
+      key: api_key,
+      secret: api_secret,
+    },
+    signature_method: 'HMAC-SHA1',
+    hash_function: (baseString, key) => crypto.createHmac('sha1', key).update(baseString).digest('base64'),
+  });
 
-    res.json({ message: 'Tweet was published', tweet: response.data });
+  const token = {
+    key: access_token,
+    secret: access_token_secret,
+  };
+
+  const url = 'https://api.twitter.com/2/tweets';
+
+  const authHeader = oauth.toHeader(oauth.authorize({
+    url,
+    method: 'POST',
+  }, token));
+
+  try {
+    const response = await axios.post(url, { text: tweetText }, {
+      headers: {
+        ...authHeader,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    res.json({ message: 'Tweet successfully posted!', tweet: response.data });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: error.response?.data || 'Tweet has not been published.' });
+    console.error('Error: ', error.response?.data || error.message);
+    res.status(500).json({ error: error.response?.data || 'Failed to post tweet.' });
   }
 });
 
