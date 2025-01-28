@@ -1,4 +1,3 @@
-TwitterPostForm
 TwitterPostForm is a full-stack web application that allows users to create and post tweets to X.com (formerly Twitter). Built with React for the frontend and Express for the backend, this project demonstrates how to integrate with the X.com API to post tweets programmatically.
 
 Features
