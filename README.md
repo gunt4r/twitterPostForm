@@ -1,50 +1,68 @@
-# React + TypeScript + Vite
+TwitterPostForm
+TwitterPostForm is a full-stack web application that allows users to create and post tweets to X.com (formerly Twitter). Built with React for the frontend and Express for the backend, this project demonstrates how to integrate with the X.com API to post tweets programmatically.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Features
+Create Tweets: Write and post tweets directly from the app.
 
-Currently, two official plugins are available:
+User Authentication: Securely authenticate with X.com using OAuth 2.0.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Backend API: Express server handles API requests and interacts with the X.com API.
 
-## Expanding the ESLint configuration
+Technologies Used
+Frontend: React, Axios
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Backend: Express.js, Node.js, X.com API
 
-- Configure the top-level `parserOptions` property like this:
+Authentication: OAuth 2.0
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Package Manager: npm 
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Prerequisites
+Before running the project, ensure you have the following installed:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Node.js (v16 or higher)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+npm
+
+X.com Developer Account (to access the API)
+
+Setup
+1. Clone the Repository
+
+git clone https://github.com/gunt4r/twitterPostForm.git
+
+2. Install Dependencies
+Install dependencies for both the frontend and backend:
+
+npm install
+
+
+3. Run the Application
+Start the backend server:
+
+node server.js 
+
+Start the frontend development server:
+
+npm run dev
+
+
+API Endpoints
+POST /api/postTweet: Post a new tweet.
+
+
+Contributing
+Contributions are welcome! If you'd like to contribute, please follow these steps:
+
+Fork the repository.
+
+Create a new branch (git checkout -b feature/your-feature-name).
+
+Commit your changes (git commit -m 'Add some feature').
+
+Push to the branch (git push origin feature/your-feature-name).
+
+Open a pull request.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
